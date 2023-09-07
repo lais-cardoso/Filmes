@@ -1,36 +1,28 @@
-from flask import Flask, render_template, url_for, redirect
-from datetime import datetime, timedelta
+from flask import Flask, render_template
+from datetime import datetime
+from dotenv import load_dotenv
+load_dotenv()
+import os
+import dates
+
+oscar_environment_variable = f"{os.environ['DATE']}"
+
+oscar_date = datetime.strptime(oscar_environment_variable, "%Y/%m/%d")
 
 app = Flask(__name__)
 
-data_atual = datetime.now()
-
-# index route calculation
-freeSample = timedelta(30)
-
-unsubscribeDate = data_atual + freeSample
-
-expiredDate = unsubscribeDate.strftime('%d/%m/%Y')
-
-# home route calculation
-
-date = data_atual.strftime('%d/%m/%Y  %H:%M')
-
-oscarDate = datetime(2024, 3, 10)
-
-year = oscarDate.year
-
-difference = oscarDate - data_atual
-
-differenceDay = difference.days
-
 @app.route('/about')
 def index():
-    redirect(url_for('home'))
-    return render_template('index.html', date=date, expiredDate=expiredDate)
+    current_date = datetime.now()
+    expired_date = dates.calculate_expired_date(current_date)
+    date = current_date.strftime('%d/%m/%Y  %H:%M')
+
+    return render_template('index.html', date=date, expired_date=expired_date)
 
 
 @app.route('/')
 def home():
-    redirect(url_for('index'))
-    return render_template('home.html', year=year, differenceDay=differenceDay)
+    current_date = datetime.now()
+    difference_day = dates.calculate_difference_day(current_date)
+    year = oscar_date.year
+    return render_template('home.html', year=year, difference_day=difference_day)
