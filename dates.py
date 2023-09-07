@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 
-oscar_environment_variable = f"{os.environ['DATE']}"
+oscar_environment_variable = f"{os.environ['OSCAR_DATE']}"
 
 oscar_date = datetime.strptime(oscar_environment_variable, "%Y/%m/%d")
 
