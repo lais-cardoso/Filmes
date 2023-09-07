@@ -1,7 +1,12 @@
 #arquivo para colocar as funções
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
+load_dotenv()
+import os
 
-oscar_date = datetime(2024, 3, 10)
+oscar_environment_variable = f"{os.environ['DATE']}"
+
+oscar_date = datetime.strptime(oscar_environment_variable, "%Y/%m/%d")
 
 def calculate_expired_date(current_date):
     # index route calculation
