@@ -1,13 +1,10 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from datetime import datetime
 from dotenv import load_dotenv
 load_dotenv()
 import os
-import dates
-
-oscar_environment_variable = f"{os.environ['OSCAR_DATE']}"
-
-oscar_date = datetime.strptime(oscar_environment_variable, "%Y/%m/%d")
+import lib.dates as dates
+from forms import login_validate
 
 app = Flask(__name__)
 
@@ -22,7 +19,20 @@ def index():
 
 @app.route('/')
 def home():
+    oscar_environment_variable = f"{os.environ['OSCAR_DATE']}"
+    oscar_date = datetime.strptime(oscar_environment_variable, "%Y/%m/%d")
     current_date = datetime.now()
-    difference_day = dates.calculate_difference_day(current_date)
+    difference_day = dates.calculate_difference_day(current_date, oscar_date)
     year = oscar_date.year
+
     return render_template('home.html', year=year, difference_day=difference_day)
+
+@app.route('/login', methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        print(request.form["name"])
+        print(request.form["email"])
+        print(request.form["password"])
+        
+    return render_template('login.html')
+
