@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request
-from forms import login_validate
 
 app = Flask(__name__)
 
