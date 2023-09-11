@@ -1,8 +1,4 @@
-#arquivo para colocar as funções
-from datetime import datetime, timedelta
-from dotenv import load_dotenv
-load_dotenv()
-import os
+from datetime import timedelta
 
 def calculate_expired_date(current_date):
     # index route calculation
