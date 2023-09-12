@@ -1,4 +1,11 @@
 from flask import Flask, render_template, request
+from datetime import datetime
+from dotenv import load_dotenv
+load_dotenv()
+import os
+
+#local
+import lib.dates as dates
 
 from forms import register_form
 
@@ -12,17 +19,6 @@ def login():
         age = request.form["age"]
         register_form(name, email, age)
     return render_template('register.html')
-
-from flask import Flask, render_template
-from datetime import datetime
-from dotenv import load_dotenv
-load_dotenv()
-import os
-
-#local
-import lib.dates as dates
-
-app = Flask(__name__)
 
 @app.route('/about')
 def index():
