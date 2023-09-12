@@ -1,13 +1,15 @@
 from flask import Flask, render_template, request
 
+from register_validate import register_validate
+
 app = Flask(__name__)
 
-@app.route('/login', methods=["GET", "POST"])
+@app.route('/register', methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        print(request.form["name"])
-        print(request.form["email"])
-        print(request.form["password"])
-        
+        name = request.form["name"]
+        email = request.form["email"]
+        age = request.form["age"]
+        register_validate(name, email, age)
     return render_template('register.html')
 
