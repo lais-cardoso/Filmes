@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 
-from forms import register_validate
+from forms import register_form
 
 app = Flask(__name__)
 
@@ -10,6 +10,6 @@ def login():
         name = request.form["name"]
         email = request.form["email"]
         age = request.form["age"]
-        register_validate(name, email, age)
+        register_form(name, email, age)
     return render_template('register.html')
 
