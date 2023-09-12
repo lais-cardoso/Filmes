@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 
-from register_validate import register_validate
+from forms import register_validate
 
 app = Flask(__name__)
 
