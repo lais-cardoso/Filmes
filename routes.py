@@ -1,17 +1,19 @@
+import lib.dates as dates
+import os
 from flask import Flask, redirect, render_template, request, url_for
 from datetime import datetime
 from dotenv import load_dotenv
 load_dotenv()
-import os
 
-#local
-import lib.dates as dates
+# local
 
 app = Flask(__name__)
+
 
 @app.route('/register', methods=["GET"])
 def register():
     return render_template('register.html', name='', email='', age='')
+
 
 @app.route('/about')
 def index():
@@ -32,14 +34,14 @@ def home():
 
     return render_template('home.html', year=year, difference_day=difference_day)
 
+
 @app.route('/profile', methods=["GET", "POST"])
 def profile():
     if request.method != "POST":
         return redirect(url_for('register'))
-    
+
     name = request.form.get('name')
     email = request.form.get('email')
     age = request.form.get('age')
 
     return render_template('profile.html', name=name, email=email, age=age)
-

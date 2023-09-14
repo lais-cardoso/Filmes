@@ -1,19 +1,19 @@
 {% extends 'base.html' %}
-    {% block header %}
-    <title>Profile</title>
-    <h1>Profile</h1>
-    {% endblock header %}
-  
-    {% block content %}
-        <form method="get">
-            <h3>Name</h3>
-            <p>{{ name }}</p>
-            <br />
-            <h3>Email</h3>
-            <p>{{ email }}</p>
-            <br />
-            <h3>Age</h3>
-            <p>{{ age }}</p>
-            <br />
-        </form>
-    {% endblock content %}
+{% block header %}
+<title>Profile</title>
+<h1>Profile</h1>
+{% endblock header %}
+
+{% block content %}
+<form method="get">
+    <h3>Name</h3>
+    <p>{{ name }}</p>
+    <br />
+    <h3>Email</h3>
+    <p>{{ email }}</p>
+    <br />
+    <h3>Age</h3>
+    <p>{{ age }}</p>
+    <br />
+</form>
+{% endblock content %}
