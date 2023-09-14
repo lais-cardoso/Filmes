@@ -34,7 +34,6 @@ def home():
 
 @app.route('/profile', methods=["GET", "POST"])
 def profile():
-    #rota do tipo get
     if request.method != "POST":
         return redirect(url_for('register'))
     
