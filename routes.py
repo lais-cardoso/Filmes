@@ -43,6 +43,6 @@ def profile():
 
     name = request.form.get('name')
     email = request.form.get('email')
-    age = request.form.get('age')
+    age = int (request.form.get('age'))
 
     return render_template('profile.html', name=name, email=email, age=age)
