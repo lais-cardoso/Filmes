@@ -7,7 +7,7 @@
 
   
   {% block content %}
-    <form method="post" action="{{ url_for('profile') }}">
+    <form action="{{ url_for('profile') }}" method="post" >
             <label for="name">Name</label>
             <input type="text" name="name">  
         <br/><br/>
@@ -17,6 +17,6 @@
             <label for="age">Age</label>
             <input type="number" name="age">
         <br/><br/>
-        <button type="submit">Register</button>
+            <button type="submit">Register</button>
     </form>
   {% endblock content %}
