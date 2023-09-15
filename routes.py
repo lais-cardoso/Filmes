@@ -24,6 +24,13 @@ def index():
 
     return render_template('index.html', date=date, expired_date=expired_date)
 
+movies = ["Um sonho de liberdade", 
+  "A Lista de Schindler",
+  "Clube da Luta",
+  "Matrix",
+  "O Poderoso Chefão",
+  "O Poderoso Chefão Parte II"]
+
 
 @app.route('/')
 def home():
@@ -33,7 +40,8 @@ def home():
     difference_day = dates.calculate_difference_day(current_date, oscar_date)
     year = oscar_date.year
 
-    return render_template('home.html', year=year, difference_day=difference_day)
+    print(difference_day)
+    return render_template('home.html', year=year, difference_day=difference_day, movies = movies)
 
 
 @app.route('/profile', methods=["GET", "POST"])
