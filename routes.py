@@ -17,12 +17,12 @@ def register():
 
 
 @app.route('/about')
-def index():
+def about():
     current_date = datetime.now()
     expired_date = dates.calculate_expired_date(current_date)
     date = current_date.strftime('%d/%m/%Y  %H:%M')
 
-    return render_template('index.html', date=date, expired_date=expired_date)
+    return render_template('about.html', date=date, expired_date=expired_date)
 
 movies = ["Um sonho de liberdade", 
   "A Lista de Schindler",
