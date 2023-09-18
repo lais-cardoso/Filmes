@@ -1,17 +1,28 @@
-<!doctype html>
-<title>Filmes</title>
-  <h1>Filmes</h1>
-  <h3>Avaliações</h3>
-  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quisquam magni quasi beatae, eum laboriosam, itaque minima blanditiis ex earum impedit numquam debitis deleniti omnis expedita sit atque inventore, aut incidunt!</p>
-  <ul>
-    <li>Um sonho de liberdade</li>
-    <li>A Lista de Schindler</li>
-    <li>Clube da Luta</li>
-    <li>Matrix</li>
-    <li>O Poderoso Chefão</li>
-    <li>O Poderoso Chefão Parte II</li>
-  </ul>
+{% extends 'base.html' %}
+{% block header %}
+<title>Home</title>
+<h1>Home</h1>
+{% endblock header %}
 
-  <a href="{{ url_for('index') }}">Sobre nós!</a>
 
-  <p>Faltam <strong>{{ difference_day }} dias</strong> para o Oscar em {{ year }}</p>
+{% block content %}
+<h3>Avaliações</h3>
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quisquam magni quasi beatae, eum laboriosam, itaque minima
+  blanditiis ex earum impedit numquam debitis deleniti omnis expedita sit atque inventore, aut incidunt!</p>
+<ul>
+  {%for movie in movies%}
+  <li>{{movie}}</li>
+  {% endfor %}
+</ul>
+
+<a href="{{ url_for('index') }}">Sobre nós!</a>
+
+{% if difference_day > 0 %}
+<p>Faltam <strong>{{ difference_day }} dias</strong> para o Oscar em {{ year }}</p>
+{% elif difference_day == 0 %}
+<p>Hoje é o dia do OSCAR!</p>
+{% else %}
+<p>Aguarde a nova data do OSCAR!</p>
+{% endif %}
+
+{% endblock content %}
