@@ -1,13 +1,13 @@
 import os
 import datetime
 from flask import Flask, redirect, render_template, request, url_for
-from datetime import datetime, date
+from datetime import datetime
 from dotenv import load_dotenv
 load_dotenv()
 
 # local
-import lib.movies_list as movies_list
 import lib.dates as dates
+import lib.movies_list as movies_list
 
 app = Flask(__name__)
 
@@ -32,7 +32,8 @@ def home():
     oscar_environment_variable = f"{os.environ['OSCAR_DATE']}"
     oscar_date = datetime.strptime(oscar_environment_variable, "%Y/%m/%d")
     current_date = datetime.now()
-    today_date = current_date.replace(minute=0, hour=0, second=0, microsecond=0)
+    today_date = current_date.replace(
+        minute=0, hour=0, second=0, microsecond=0)
     difference_day = dates.calculate_difference_day(today_date, oscar_date)
     year = oscar_date.year
 

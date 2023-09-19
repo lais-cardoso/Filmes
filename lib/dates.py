@@ -1,5 +1,5 @@
-from datetime import date, timedelta, datetime
-import datetime
+from datetime import date, timedelta
+
 
 def calculate_expired_date(current_date: date):
     # index route calculation
@@ -8,6 +8,7 @@ def calculate_expired_date(current_date: date):
     expired_date = unsubscribe_date.strftime('%d/%m/%Y')
 
     return expired_date
+
 
 def calculate_difference_day(today_date: date, oscar_date: date):
     # home route calculation
