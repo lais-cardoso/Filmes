@@ -1,4 +1,5 @@
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
+import datetime
 
 def calculate_expired_date(current_date: date):
     # index route calculation
@@ -8,9 +9,9 @@ def calculate_expired_date(current_date: date):
 
     return expired_date
 
-def calculate_difference_day(current_date: date, oscar_date: date):
+def calculate_difference_day(today_date: date, oscar_date: date):
     # home route calculation
-    difference = oscar_date - current_date
+    difference = oscar_date - today_date
     difference_day = difference.days
 
     return difference_day

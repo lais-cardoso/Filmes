@@ -1,11 +1,13 @@
-import lib.dates as dates
 import os
+import datetime
 from flask import Flask, redirect, render_template, request, url_for
-from datetime import datetime
+from datetime import datetime, date
 from dotenv import load_dotenv
-
-from lib.movies_list import movies_list
 load_dotenv()
+
+# local
+import lib.movies_list as movies_list
+import lib.dates as dates
 
 app = Flask(__name__)
 
@@ -24,15 +26,18 @@ def about():
 
     return render_template('about.html', date=date, expired_date=expired_date)
 
+
 @app.route('/')
 def home():
     oscar_environment_variable = f"{os.environ['OSCAR_DATE']}"
     oscar_date = datetime.strptime(oscar_environment_variable, "%Y/%m/%d")
     current_date = datetime.now()
-    difference_day = dates.calculate_difference_day(current_date, oscar_date)
+    today_date = current_date.replace(minute=0, hour=0, second=0, microsecond=0)
+    difference_day = dates.calculate_difference_day(today_date, oscar_date)
     year = oscar_date.year
-    movies = movies_list()
-    
+
+    movies = movies_list.movies_list()
+
     return render_template('home.html', year=year, difference_day=difference_day, movies=movies)
 
 
@@ -43,6 +48,6 @@ def profile():
 
     name = request.form.get('name')
     email = request.form.get('email')
-    age = int (request.form.get('age'))
+    age = int(request.form.get('age'))
 
     return render_template('profile.html', name=name, email=email, age=age)
