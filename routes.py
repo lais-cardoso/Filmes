@@ -1,11 +1,13 @@
-import lib.dates as dates
 import os
+import datetime
 from flask import Flask, redirect, render_template, request, url_for
 from datetime import datetime
 from dotenv import load_dotenv
 load_dotenv()
 
 # local
+import lib.dates as dates
+import lib.movies_list as movies_list
 
 app = Flask(__name__)
 
@@ -17,19 +19,12 @@ def register():
 
 
 @app.route('/about')
-def index():
+def about():
     current_date = datetime.now()
     expired_date = dates.calculate_expired_date(current_date)
     date = current_date.strftime('%d/%m/%Y  %H:%M')
 
-    return render_template('index.html', date=date, expired_date=expired_date)
-
-movies = ["Um sonho de liberdade", 
-  "A Lista de Schindler",
-  "Clube da Luta",
-  "Matrix",
-  "O Poderoso Chefão",
-  "O Poderoso Chefão Parte II"]
+    return render_template('about.html', date=date, expired_date=expired_date)
 
 
 @app.route('/')
@@ -37,11 +32,14 @@ def home():
     oscar_environment_variable = f"{os.environ['OSCAR_DATE']}"
     oscar_date = datetime.strptime(oscar_environment_variable, "%Y/%m/%d")
     current_date = datetime.now()
-    difference_day = dates.calculate_difference_day(current_date, oscar_date)
+    today_date = current_date.replace(
+        minute=0, hour=0, second=0, microsecond=0)
+    difference_day = dates.calculate_difference_day(today_date, oscar_date)
     year = oscar_date.year
 
-    print(difference_day)
-    return render_template('home.html', year=year, difference_day=difference_day, movies = movies)
+    movies = movies_list.movies_list()
+
+    return render_template('home.html', year=year, difference_day=difference_day, movies=movies)
 
 
 @app.route('/profile', methods=["GET", "POST"])
@@ -51,6 +49,6 @@ def profile():
 
     name = request.form.get('name')
     email = request.form.get('email')
-    age = int (request.form.get('age'))
+    age = int(request.form.get('age'))
 
     return render_template('profile.html', name=name, email=email, age=age)
