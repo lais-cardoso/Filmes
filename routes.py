@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 @app.route('/register', methods=["GET"])
 def register():
-
+    
     return render_template('register.html', name='', email='', age='')
 
 
