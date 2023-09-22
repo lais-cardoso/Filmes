@@ -1,3 +1,7 @@
+"""
+Provide display list
+"""
+
 def movies_list():
     '''
         Returns a list of movies name string.
