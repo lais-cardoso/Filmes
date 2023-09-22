@@ -52,3 +52,10 @@ def profile():
     age = int(request.form.get('age'))
 
     return render_template('profile.html', name=name, email=email, age=age)
+
+@app.route('/login', methods=["GET", "POST"])
+def login():
+    email = request.form.get('name')
+    password = request.form.get('password')
+
+    return render_template('profile.html', email=email, password=password)
