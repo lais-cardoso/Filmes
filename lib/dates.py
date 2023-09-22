@@ -20,7 +20,6 @@ def calculate_expired_date(current_date: date):
 
 
 def calculate_difference_day(today_date: date, oscar_date: date):
-    #PEP - 257
     """ Subtract two dates
 
     :args:
