@@ -23,8 +23,8 @@ def calculate_difference_day(today_date: date, oscar_date: date):
     """ Subtract two dates
 
     :args:
-        today_date: A current date.
-        oscar_date: Oscar celebration date. 
+        today_date (date): A current date.
+        oscar_date (date): Oscar celebration date. 
 
     :returns The subtraction between the Oscar celebration date and the current date.
 
