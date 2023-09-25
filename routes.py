@@ -20,6 +20,7 @@ def register():
 
 @app.route('/about')
 def about():
+
     current_date = datetime.now()
     expired_date = dates.calculate_expired_date(current_date)
     date = current_date.strftime('%d/%m/%Y  %H:%M')
@@ -29,6 +30,7 @@ def about():
 
 @app.route('/')
 def home():
+
     oscar_environment_variable = f"{os.environ['OSCAR_DATE']}"
     oscar_date = datetime.strptime(oscar_environment_variable, "%Y/%m/%d")
     current_date = datetime.now()
@@ -55,6 +57,16 @@ def profile():
 
 @app.route('/login', methods=["GET"])
 def login():
+    """ Read login variables
+
+    :args:
+        name: the username, a string.
+        password: the password, a string.
+
+    :returns reading the variables.
+
+    """
+
     email = request.form.get('name')
     password = request.form.get('password')
 
@@ -62,5 +74,8 @@ def login():
 
 @app.route('/begin', methods=['GET'])
 def begin():
+    """ Route accessed by logged in users
+
+    """
 
     return render_template('begin.html')
