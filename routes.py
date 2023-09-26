@@ -1,8 +1,10 @@
 import os
 import datetime
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, redirect, render_template, request, url_for, session
 from datetime import datetime
 from dotenv import load_dotenv
+from flask_mysqldb import MySQL
+import MySQLdb.cursors
 load_dotenv()
 
 # local
@@ -11,6 +13,13 @@ import lib.movies_list as movies_list
 
 app = Flask(__name__)
 
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = 'LAIS123456'
+app.config['MYSQL_DB'] = 'db_filmes'
+app.config['SECRET_KEY'] = 'super secret key'
+
+mysql = MySQL(app)
 
 @app.route('/register', methods=["GET"])
 def register():
@@ -55,27 +64,46 @@ def profile():
 
     return render_template('profile.html', name=name, email=email, age=age)
 
-@app.route('/login', methods=["GET"])
+@app.route('/login', methods=["GET", "POST"])
 def login():
     """ Read login variables
 
     :args:
-        name: the username, a string.
+        name: the name, a string.
         password: the password, a string.
 
     :returns reading the variables.
 
     """
+    alertMessage = ''
+    if request.method == 'POST' and 'email' in request.form and 'password' in request.form:
+        email = request.form['email']
+        password = request.form['password']
 
-    email = request.form.get('name')
-    password = request.form.get('password')
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM users WHERE email = %s AND password = %s', (email, password,))
 
-    return render_template('login.html', email=email, password=password)
+        user = cursor.fetchone()
 
-@app.route('/begin', methods=['GET'])
+        if user:
+            session['loggedin'] = True
+            session['id_user'] = user['id_user']
+            session['email'] = user['email']
+            session['password'] = user['password']
+            
+            return render_template('begin.html')
+        else:
+            alertMessage = 'This user does not exist!'
+
+    return render_template('login.html', alertMessage=alertMessage)
+
+@app.route('/begin', methods=['GET', "POST"])
 def begin():
     """ Route accessed by logged in users
 
     """
+
+    name = request.args.get('email')
+    password = request.args.get('password')
 
     return render_template('begin.html')

@@ -9,8 +9,12 @@ db_filmes = mysql.connector.connect(
 
 cursor = db_filmes.cursor()
 
+#todos os usuarios
 cursor.execute("SELECT * FROM users")
 
 result = cursor.fetchall()
 
-print(result)
+for i in result:
+    print(i)
+
+#print(result)
