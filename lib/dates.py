@@ -5,7 +5,7 @@ def calculate_expired_date(current_date: date):
     '''
         Calculates a deadline of 30 days.
 
-            Parameters:
+            Args:
                 current_date (date): A current date.
 
             Returns:
@@ -22,11 +22,12 @@ def calculate_expired_date(current_date: date):
 def calculate_difference_day(today_date: date, oscar_date: date):
     """ Subtract two dates
 
-    :args:
-        today_date (date): A current date.
-        oscar_date (date): Oscar celebration date. 
+        Args:
+            today_date (date): A current date.
+            oscar_date (date): Oscar celebration date. 
 
-    :returns The subtraction between the Oscar celebration date and the current date.
+        Returns: 
+            The subtraction between the Oscar celebration date and the current date.
 
     """
     difference = oscar_date - today_date
