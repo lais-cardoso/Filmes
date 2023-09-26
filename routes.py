@@ -66,15 +66,16 @@ def profile():
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
-    """ Read login variables
+    """ Read and validate login variables
 
-    :args:
-        name: the name, a string.
-        password: the password, a string.
+    Attributes:
+        email (string): the user's email.
+        password (string): the password.
 
-    :returns reading the variables.
-
+    Returns:
+        If email and password are correct, 'begin' route is returned, if not, the alert message.
     """
+
     alertMessage = ''
     if request.method == 'POST' and 'email' in request.form and 'password' in request.form:
         email = request.form['email']
@@ -86,7 +87,7 @@ def login():
         user = cursor.fetchone()
 
         if user:
-            session['loggedin'] = True
+            session['logged_in'] = True
             session['id_user'] = user['id_user']
             session['email'] = user['email']
             session['password'] = user['password']
@@ -97,13 +98,10 @@ def login():
 
     return render_template('login.html', alertMessage=alertMessage)
 
-@app.route('/begin', methods=['GET', "POST"])
+@app.route('/begin', methods=["GET", "POST"])
 def begin():
     """ Route accessed by logged in users
 
     """
-
-    name = request.args.get('email')
-    password = request.args.get('password')
 
     return render_template('begin.html')
