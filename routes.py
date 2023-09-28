@@ -1,5 +1,6 @@
 import os
 import datetime
+import sqlite3
 from flask import Flask, redirect, render_template, request, url_for
 from datetime import datetime
 from dotenv import load_dotenv
@@ -108,8 +109,13 @@ def profile():
 
     return render_template('profile.html', name=name, email=email, age=age)
 
+class User(){
+    
+}
+
 @login_manager.user_loader
 def load_user(user_id):
+    connection = sqlite3.connect('/var/www/flask/login.db')
     return User.get(user_id)
 
 @app.route('/login', methods=["GET", "POST"])
