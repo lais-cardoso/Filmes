@@ -1,8 +1,10 @@
 import os
 import datetime
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, redirect, render_template, request, url_for, session
 from datetime import datetime
 from dotenv import load_dotenv
+from flask_mysqldb import MySQL
+import MySQLdb.cursors
 load_dotenv()
 
 # local
@@ -12,6 +14,13 @@ import lib.dates as dates
 
 app = Flask(__name__)
 
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = 'LAIS123456'
+app.config['MYSQL_DB'] = 'db_filmes'
+app.config['SECRET_KEY'] = 'super secret key'
+
+mysql = MySQL(app)
 
 @app.route('/register', methods=["GET"])
 def register():
@@ -104,3 +113,45 @@ def profile():
     age = int(request.form.get('age'))
 
     return render_template('profile.html', name=name, email=email, age=age)
+
+@app.route('/login', methods=["GET", "POST"])
+def login():
+    """ Read and validate login variables
+
+    Attributes:
+        email (string): the user's email.
+        password (string): the password.
+
+    Returns:
+        If email and password are correct, 'begin' route is returned, if not, the alert message.
+    """
+
+    alertMessage = ''
+    if request.method == 'POST' and 'email' in request.form and 'password' in request.form:
+        email = request.form['email']
+        password = request.form['password']
+
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM users WHERE email = %s AND password = %s', (email, password,))
+
+        user = cursor.fetchone()
+
+        if user:
+            session['logged_in'] = True
+            session['id_user'] = user['id_user']
+            session['email'] = user['email']
+            session['password'] = user['password']
+            
+            return render_template('begin.html')
+        else:
+            alertMessage = 'This user does not exist!'
+
+    return render_template('login.html', alertMessage=alertMessage)
+
+@app.route('/begin', methods=["GET", "POST"])
+def begin():
+    """ Route accessed by logged in users
+
+    """
+
+    return render_template('begin.html')
