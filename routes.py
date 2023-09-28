@@ -1,10 +1,9 @@
 import os
 import datetime
-from flask import Flask, redirect, render_template, request, url_for, session
+from flask import Flask, redirect, render_template, request, url_for
 from datetime import datetime
 from dotenv import load_dotenv
-from flask_mysqldb import MySQL
-import MySQLdb.cursors
+from flask_login import LoginManager
 load_dotenv()
 
 # local
@@ -14,13 +13,8 @@ import lib.dates as dates
 
 app = Flask(__name__)
 
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'LAIS123456'
-app.config['MYSQL_DB'] = 'db_filmes'
-app.config['SECRET_KEY'] = 'super secret key'
-
-mysql = MySQL(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 @app.route('/register', methods=["GET"])
 def register():
@@ -114,6 +108,10 @@ def profile():
 
     return render_template('profile.html', name=name, email=email, age=age)
 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get(user_id)
+
 @app.route('/login', methods=["GET", "POST"])
 def login():
     """ Read and validate login variables
@@ -127,24 +125,6 @@ def login():
     """
 
     alertMessage = ''
-    if request.method == 'POST' and 'email' in request.form and 'password' in request.form:
-        email = request.form['email']
-        password = request.form['password']
-
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM users WHERE email = %s AND password = %s', (email, password,))
-
-        user = cursor.fetchone()
-
-        if user:
-            session['logged_in'] = True
-            session['id_user'] = user['id_user']
-            session['email'] = user['email']
-            session['password'] = user['password']
-            
-            return render_template('begin.html')
-        else:
-            alertMessage = 'This user does not exist!'
 
     return render_template('login.html', alertMessage=alertMessage)
 
