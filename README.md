@@ -1,5 +1,5 @@
 # Filmes
 
 <h4 align="center"> 
-	🚧  Projeto Filmes Em construção...  🚧
+	🚧  Projeto em construção...  🚧
 </h4>
