@@ -16,7 +16,7 @@ import lib.dates as dates
 
 app = Flask(__name__)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///login.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
 
 app.config["SECRET_KEY"] = "123456"
 
@@ -27,7 +27,7 @@ login_manager.init_app(app)
 
 class Users(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(250), unique=True, nullable=False)
+    email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
     
 db.init_app(app)
@@ -49,7 +49,7 @@ def register():
 
     """
     if request.method == "POST":
-        user = Users(username=request.form.get("username"),
+        user = Users(email=request.form.get("email"),
                      password=request.form.get("password"))
         db.session.add(user)
 
@@ -112,28 +112,25 @@ def home():
     return render_template('home.html', year=year, difference_day=difference_day, movies=movies)
 
 
-# @app.route('/profile', methods=["GET", "POST"])
-# def profile():
-#     """ Set registration variables
+@app.route('/profile', methods=["GET", "POST"])
+def profile():
+    """ Set registration variables
 
-#     Attributes:
-#         name (string): the username.
-#         email (string): the user's email.
-#         age (string): the user's age.
+    Attributes:
+        name (string): the username.
+        email (string): the user's email.
+        age (string): the user's age.
 
-#     Returns:
-#         Set the values in registration variables.
+    Returns:
+        Set the values in registration variables.
 
-#     """
+    """
 
-#     if request.method != "POST":
-#         return redirect(url_for('register'))
+    # name = request.form.get('name')
+    email = request.form.get('email')
+    # age = int(request.form.get('age'))
 
-#     # name = request.form.get('name')
-#     # email = request.form.get('email')
-#     # age = int(request.form.get('age'))
-
-#     return render_template('profile.html')
+    return render_template('profile.html', email=email)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -155,7 +152,7 @@ def login():
 
     if request.method == "POST":
         user = Users.query.filter_by(
-            username = request.form.get("username")).first()
+            email = request.form.get("email")).first()
         if user.password == request.form.get("password"):
             login_user(user)
             return redirect(url_for("begin"))
