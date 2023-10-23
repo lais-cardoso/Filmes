@@ -111,30 +111,8 @@ def home():
 
     return render_template('home.html', year=year, difference_day=difference_day, movies=movies)
 
-
-@app.route('/profile', methods=["GET", "POST"])
-def profile():
-    """ Set registration variables
-
-    Attributes:
-        name (string): the username.
-        email (string): the user's email.
-        age (string): the user's age.
-
-    Returns:
-        Set the values in registration variables.
-
-    """
-
-    # name = request.form.get('name')
-    email = request.form.get('email')
-    # age = int(request.form.get('age'))
-
-    return render_template('profile.html', email=email)
-
 @login_manager.user_loader
 def load_user(user_id):
-     #connection = sqlite3.connect('/var/www/flask/login.db')
      return Users.query.get(user_id)
 
 @app.route('/login', methods=["GET", "POST"])
