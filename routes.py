@@ -1,6 +1,7 @@
+import lib.dates as dates
+import lib.movies_list as movies_list
 import os
 import datetime
-import sqlite3
 from flask import Flask, redirect, render_template, request, url_for
 from datetime import datetime
 from dotenv import load_dotenv
@@ -10,47 +11,46 @@ from flask_sqlalchemy import SQLAlchemy
 load_dotenv()
 
 # local
-import lib.movies_list as movies_list
-import lib.dates as dates
-
 
 app = Flask(__name__)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
 
-app.config["SECRET_KEY"] = "123456"
+app.config["SECRET_KEY"] = f"{os.environ['SECRET_KEY']}"
 
 db = SQLAlchemy()
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-class Users(UserMixin, db.Model):
+
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
-    
+
+
 db.init_app(app)
 
 with app.app_context():
     db.create_all()
 
+
 @app.route('/register', methods=["GET", "POST"])
 def register():
-    """ Read registration variables
+    """ Set user registration
 
     Attributes:
         name (string): the username.
         email (string): the user's email.
-        age (int): the user's age.
 
     Returns: 
-        read the variables.
+        read the variables e and redirects to the login page.
 
     """
     if request.method == "POST":
-        user = Users(email=request.form.get("email"),
-                     password=request.form.get("password"))
+        user = User(email=request.form.get("email"),
+                    password=request.form.get("password"))
         db.session.add(user)
 
         db.session.commit()
@@ -111,9 +111,14 @@ def home():
 
     return render_template('home.html', year=year, difference_day=difference_day, movies=movies)
 
+
 @login_manager.user_loader
 def load_user(user_id):
-     return Users.query.get(user_id)
+    """ Logs user in by set their id
+
+    """
+    return User.query.get(user_id)
+
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
@@ -129,8 +134,8 @@ def login():
     alertMessage = ''
 
     if request.method == "POST":
-        user = Users.query.filter_by(
-            email = request.form.get("email")).first()
+        user = User.query.filter_by(
+            email=request.form.get("email")).first()
         if user.password == request.form.get("password"):
             login_user(user)
             return redirect(url_for("begin"))
@@ -139,10 +144,17 @@ def login():
 
     return render_template('login.html', alertMessage=alertMessage)
 
+
 @app.route("/logout")
 def logout():
     logout_user()
+
+    """ Method to disconnect the user
+
+    """
+
     return redirect(url_for("login"))
+
 
 @app.route('/begin', methods=["GET", "POST"])
 def begin():
