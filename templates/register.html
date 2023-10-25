@@ -1,21 +1,18 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<title>Register</title>
+<title>Sign up</title>
 <h1>Register</h1>
 {% endblock header %}
 
 
 {% block content %}
-<form action="{{ url_for('profile') }}" method="post">
-  <label for="name">Name</label>
-  <input type="text" name="name">
-  <br /><br />
-  <label for="email">Email</label>
+<form action="#" method="post">
+  <label for="email">Email: </label>
   <input type="email" name="email">
   <br /><br />
-  <label for="age">Age</label>
-  <input type="number" name="age">
+  <label for="password">Password: </label>
+  <input type="password" name="password">
   <br /><br />
   <button type="submit">Register</button>
 </form>

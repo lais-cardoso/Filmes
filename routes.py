@@ -1,42 +1,63 @@
+import lib.dates as dates
+import lib.movies_list as movies_list
 import os
 import datetime
-from flask import Flask, redirect, render_template, request, url_for, session
+from flask import Flask, redirect, render_template, request, url_for
 from datetime import datetime
 from dotenv import load_dotenv
-from flask_mysqldb import MySQL
-import MySQLdb.cursors
+from flask_login import LoginManager, UserMixin, login_user, logout_user
+from flask_sqlalchemy import SQLAlchemy
+
 load_dotenv()
 
 # local
-import lib.movies_list as movies_list
-import lib.dates as dates
-
 
 app = Flask(__name__)
 
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'LAIS123456'
-app.config['MYSQL_DB'] = 'db_filmes'
-app.config['SECRET_KEY'] = 'super secret key'
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
 
-mysql = MySQL(app)
+app.config["SECRET_KEY"] = f"{os.environ['SECRET_KEY']}"
 
-@app.route('/register', methods=["GET"])
+db = SQLAlchemy()
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(250), unique=True, nullable=False)
+    password = db.Column(db.String(250), nullable=False)
+
+
+db.init_app(app)
+
+with app.app_context():
+    db.create_all()
+
+
+@app.route('/register', methods=["GET", "POST"])
 def register():
-    """ Read registration variables
+    """ Set user registration
 
     Attributes:
         name (string): the username.
         email (string): the user's email.
-        age (int): the user's age.
 
     Returns: 
-        read the variables.
+        read the variables e and redirects to the login page.
 
     """
+    if request.method == "POST":
+        user = User(email=request.form.get("email"),
+                    password=request.form.get("password"))
+        db.session.add(user)
 
-    return render_template('register.html', name='', email='', age='')
+        db.session.commit()
+
+        return redirect(url_for("login"))
+
+    return render_template('register.html')
 
 
 @app.route('/about')
@@ -91,28 +112,13 @@ def home():
     return render_template('home.html', year=year, difference_day=difference_day, movies=movies)
 
 
-@app.route('/profile', methods=["GET", "POST"])
-def profile():
-    """ Set registration variables
-
-    Attributes:
-        name (string): the username.
-        email (string): the user's email.
-        age (string): the user's age.
-
-    Returns:
-        Set the values in registration variables.
+@login_manager.user_loader
+def load_user(user_id):
+    """ Logs user in by set their id
 
     """
+    return User.query.get(user_id)
 
-    if request.method != "POST":
-        return redirect(url_for('register'))
-
-    name = request.form.get('name')
-    email = request.form.get('email')
-    age = int(request.form.get('age'))
-
-    return render_template('profile.html', name=name, email=email, age=age)
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
@@ -125,28 +131,30 @@ def login():
     Returns:
         If email and password are correct, 'begin' route is returned, if not, the alert message.
     """
-
     alertMessage = ''
-    if request.method == 'POST' and 'email' in request.form and 'password' in request.form:
-        email = request.form['email']
-        password = request.form['password']
 
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM users WHERE email = %s AND password = %s', (email, password,))
-
-        user = cursor.fetchone()
-
-        if user:
-            session['logged_in'] = True
-            session['id_user'] = user['id_user']
-            session['email'] = user['email']
-            session['password'] = user['password']
-            
-            return render_template('begin.html')
+    if request.method == "POST":
+        user = User.query.filter_by(
+            email=request.form.get("email")).first()
+        if user.password == request.form.get("password"):
+            login_user(user)
+            return redirect(url_for("begin"))
         else:
-            alertMessage = 'This user does not exist!'
+            alertMessage = "This user does not exist!"
 
     return render_template('login.html', alertMessage=alertMessage)
+
+
+@app.route("/logout")
+def logout():
+    logout_user()
+
+    """ Method to disconnect the user
+
+    """
+
+    return redirect(url_for("login"))
+
 
 @app.route('/begin', methods=["GET", "POST"])
 def begin():
